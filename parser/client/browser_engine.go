@@ -1,6 +1,7 @@
 package client
 
 import (
+	"io/fs"
 	"path/filepath"
 
 	. "github.com/gamebtc/devicedetector/parser"
@@ -30,15 +31,15 @@ const FixtureFileBrowserEngine = `browser_engine.yml`
 
 func init() {
 	RegClientParser(ParserNameBrowserEngine,
-		func(dir string) ClientParser {
-			return NewBrowserEngine(filepath.Join(dir, FixtureFileBrowserEngine))
+		func(fsys fs.FS, dir string) ClientParser {
+			return NewBrowserEngine(fsys, filepath.Join(dir, FixtureFileBrowserEngine))
 		})
 }
 
-func NewBrowserEngine(fileName string) *BrowserEngine {
+func NewBrowserEngine(fsys fs.FS, fileName string) *BrowserEngine {
 	c := &BrowserEngine{}
 	c.ParserName = ParserNameBrowserEngine
-	if err := c.Load(fileName); err != nil {
+	if err := c.Load(fsys, fileName); err != nil {
 		return nil
 	}
 	return c

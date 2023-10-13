@@ -1,6 +1,7 @@
 package device
 
 import (
+	"io/fs"
 	"sort"
 	"strings"
 
@@ -39,9 +40,9 @@ type DeviceParserAbstract struct {
 	overAllMatch Regular
 }
 
-func (d *DeviceParserAbstract) Load(file string) error {
+func (d *DeviceParserAbstract) Load(fsys fs.FS, file string) error {
 	var v map[string]*DeviceReg
-	err := ReadYamlFile(file, &v)
+	err := ReadYamlFile(fsys, file, &v)
 	if err != nil {
 		return err
 	}

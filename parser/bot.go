@@ -1,21 +1,24 @@
 package parser
 
-import "path/filepath"
+import (
+	"io/fs"
+	"path/filepath"
+)
 
-var botFactory = make(map[string]func(string) BotParser)
+var botFactory = make(map[string]func(fs.FS, string) BotParser)
 
-func RegBotParser(name string, f func(string) BotParser) {
+func RegBotParser(name string, f func(fs.FS, string) BotParser) {
 	botFactory[name] = f
 }
 
-func GetBotCreater(name string) func(string) BotParser {
+func GetBotCreater(name string) func(fs.FS, string) BotParser {
 	f, _ := botFactory[name]
 	return f
 }
 
-func NewBotParser(dir, name string) BotParser {
+func NewBotParser(fsys fs.FS, dir, name string) BotParser {
 	if f, ok := botFactory[name]; ok {
-		return f(dir)
+		return f(fsys, dir)
 	}
 	return nil
 }
@@ -25,15 +28,15 @@ const FixtureFileBot = `bots.yml`
 
 func init() {
 	RegBotParser(ParserNameBot,
-		func(dir string) BotParser {
-			return NewBot(filepath.Join(dir, FixtureFileBot))
+		func(fsys fs.FS, dir string) BotParser {
+			return NewBot(fsys, filepath.Join(dir, FixtureFileBot))
 		})
 }
 
-func NewBot(fileName string) *Bot {
+func NewBot(fsys fs.FS, fileName string) *Bot {
 	c := &Bot{}
 	c.ParserName = ParserNameBot
-	if err := c.Load(fileName); err != nil {
+	if err := c.Load(fsys, fileName); err != nil {
 		return nil
 	}
 	return c

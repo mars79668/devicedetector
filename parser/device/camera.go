@@ -1,6 +1,7 @@
 package device
 
 import (
+	"io/fs"
 	"path/filepath"
 )
 
@@ -9,14 +10,14 @@ const FixtureFileCamera = `cameras.yml`
 
 func init() {
 	RegDeviceParser(ParserNameCamera,
-		func(dir string) DeviceParser {
-			return NewCamera(filepath.Join(dir, FixtureFileCamera))
+		func(fsys fs.FS, dir string) DeviceParser {
+			return NewCamera(fsys, filepath.Join(dir, FixtureFileCamera))
 		})
 }
 
-func NewCamera(fileName string) *Camera {
+func NewCamera(fsys fs.FS, fileName string) *Camera {
 	c := &Camera{}
-	if err := c.Load(fileName); err != nil {
+	if err := c.Load(fsys, fileName); err != nil {
 		return nil
 	}
 	return c

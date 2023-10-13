@@ -1,5 +1,7 @@
 package parser
 
+import "io/fs"
+
 const ParserNameVendor = "vendorfragments"
 const FixtureFileVendor = "vendorfragments.yml"
 
@@ -8,9 +10,9 @@ type VendorFragments struct {
 	vendorRegexes map[string][]*Regular
 }
 
-func NewVendor(file string) (*VendorFragments, error) {
+func NewVendor(fsys fs.FS, file string) (*VendorFragments, error) {
 	var m map[string][]string
-	err := ReadYamlFile(file, &m)
+	err := ReadYamlFile(fsys, file, &m)
 	if err != nil {
 		return nil, err
 	}

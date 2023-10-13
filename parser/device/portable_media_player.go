@@ -1,6 +1,7 @@
 package device
 
 import (
+	"io/fs"
 	"path/filepath"
 )
 
@@ -9,14 +10,14 @@ const FixtureFilePortableMediaPlayer = `portable_media_player.yml`
 
 func init() {
 	RegDeviceParser(ParserNamePortableMediaPlayer,
-		func(dir string) DeviceParser {
-			return NewPortableMediaPlayer(filepath.Join(dir, FixtureFilePortableMediaPlayer))
+		func(fsys fs.FS, dir string) DeviceParser {
+			return NewPortableMediaPlayer(fsys, filepath.Join(dir, FixtureFilePortableMediaPlayer))
 		})
 }
 
-func NewPortableMediaPlayer(fileName string) *PortableMediaPlayer {
+func NewPortableMediaPlayer(fsys fs.FS, fileName string) *PortableMediaPlayer {
 	p := &PortableMediaPlayer{}
-	if err := p.Load(fileName); err != nil {
+	if err := p.Load(fsys, fileName); err != nil {
 		return nil
 	}
 	return p

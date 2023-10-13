@@ -1,6 +1,7 @@
 package client
 
 import (
+	"io/fs"
 	"path/filepath"
 )
 
@@ -9,15 +10,15 @@ const FixtureFilePim = `pim.yml`
 
 func init() {
 	RegClientParser(ParserNamePim,
-		func(dir string) ClientParser {
-			return NewPim(filepath.Join(dir, FixtureFilePim))
+		func(fsys fs.FS, dir string) ClientParser {
+			return NewPim(fsys, filepath.Join(dir, FixtureFilePim))
 		})
 }
 
-func NewPim(fileName string) *Pim {
+func NewPim(fsys fs.FS, fileName string) *Pim {
 	c := &Pim{}
 	c.ParserName = ParserNamePim
-	if err := c.Load(fileName); err != nil {
+	if err := c.Load(fsys, fileName); err != nil {
 		return nil
 	}
 	return c

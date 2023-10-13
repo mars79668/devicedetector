@@ -1,6 +1,7 @@
 package device
 
 import (
+	"io/fs"
 	"path/filepath"
 )
 
@@ -9,14 +10,14 @@ const FixtureFileCar = `car_browsers.yml`
 
 func init() {
 	RegDeviceParser(ParserNameCar,
-		func(dir string) DeviceParser {
-			return NewCar(filepath.Join(dir, FixtureFileCar))
+		func(fsys fs.FS, dir string) DeviceParser {
+			return NewCar(fsys, filepath.Join(dir, FixtureFileCar))
 		})
 }
 
-func NewCar(fileName string) *Car {
+func NewCar(fsys fs.FS, fileName string) *Car {
 	c := &Car{}
-	if err := c.Load(fileName); err != nil {
+	if err := c.Load(fsys, fileName); err != nil {
 		return nil
 	}
 	return c

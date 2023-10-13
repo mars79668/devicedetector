@@ -2,10 +2,12 @@ package parser
 
 import (
 	"errors"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
+	"io"
+	"io/fs"
 	"strconv"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 
 	regexp "github.com/dlclark/regexp2"
 )
@@ -57,8 +59,12 @@ func ArrayContainsString(list []string, v string) bool {
 	return false
 }
 
-func ReadYamlFile(file string, v interface{}) error {
-	data, err := ioutil.ReadFile(file)
+func ReadYamlFile(fsys fs.FS, file string, v interface{}) error {
+	fd, err := fsys.Open(file)
+	if err != nil {
+		return errors.New("open file:" + file)
+	}
+	data, err := io.ReadAll(fd)
 	if err != nil {
 		return errors.New("not exists:" + file)
 	}
@@ -142,9 +148,10 @@ func BuildVersion(versionString string, matches []string) string {
 	return ver
 }
 
-var(
+var (
 	tdReg = regexp.MustCompile(` TD$`, regexp.IgnoreCase)
 )
+
 func BuildModel(m string, matches []string) string {
 	model := BuildByMatch(m, matches)
 	model = strings.ReplaceAll(model, "_", " ")

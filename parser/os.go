@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"io/fs"
 	"strings"
 )
 
@@ -157,9 +158,9 @@ type Oss struct {
 	overAllMatch Regular
 }
 
-func NewOss(file string) (*Oss, error) {
+func NewOss(fsys fs.FS, file string) (*Oss, error) {
 	var v []*OsReg
-	err := ReadYamlFile(file, &v)
+	err := ReadYamlFile(fsys, file, &v)
 	if err != nil {
 		return nil, err
 	}

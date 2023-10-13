@@ -1,6 +1,7 @@
 package device
 
 import (
+	"io/fs"
 	"path/filepath"
 
 	. "github.com/gamebtc/devicedetector/parser"
@@ -11,14 +12,14 @@ const FixtureFileHbbTv = `televisions.yml`
 
 func init() {
 	RegDeviceParser(ParserNameHbbTv,
-		func(dir string) DeviceParser {
-			return NewHbbTv(filepath.Join(dir, FixtureFileHbbTv))
+		func(fsys fs.FS, dir string) DeviceParser {
+			return NewHbbTv(fsys, filepath.Join(dir, FixtureFileHbbTv))
 		})
 }
 
-func NewHbbTv(fileName string) *HbbTv {
+func NewHbbTv(fsys fs.FS, fileName string) *HbbTv {
 	h := &HbbTv{}
-	if err := h.Load(fileName); err != nil {
+	if err := h.Load(fsys, fileName); err != nil {
 		h.hbbTvRegx.Regex = `HbbTV/([1-9]{1}(?:.[0-9]{1}){1,2})`
 		return nil
 	}

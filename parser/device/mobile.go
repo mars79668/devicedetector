@@ -1,6 +1,7 @@
 package device
 
 import (
+	"io/fs"
 	"path/filepath"
 )
 
@@ -9,14 +10,14 @@ const FixtureFileMobile = `mobiles.yml`
 
 func init() {
 	RegDeviceParser(ParserNameMobile,
-		func(dir string) DeviceParser {
-			return NewMobile(filepath.Join(dir, FixtureFileMobile))
+		func(fsys fs.FS, dir string) DeviceParser {
+			return NewMobile(fsys, filepath.Join(dir, FixtureFileMobile))
 		})
 }
 
-func NewMobile(fileName string) *Mobile {
+func NewMobile(fsys fs.FS, fileName string) *Mobile {
 	m := &Mobile{}
-	if err := m.Load(fileName); err != nil {
+	if err := m.Load(fsys, fileName); err != nil {
 		return nil
 	}
 	return m

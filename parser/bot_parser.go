@@ -1,6 +1,9 @@
 package parser
 
-import "strings"
+import (
+	"io/fs"
+	"strings"
+)
 
 type Producer struct {
 	Name string `yaml:"name" json:"name"`
@@ -45,9 +48,9 @@ func (b *BotParserAbstract) DiscardDetails(v bool) {
 	b.discardDetails = v
 }
 
-func (b *BotParserAbstract) Load(file string) error {
+func (b *BotParserAbstract) Load(fsys fs.FS, file string) error {
 	var v []*BotReg
-	err := ReadYamlFile(file, &v)
+	err := ReadYamlFile(fsys, file, &v)
 	if err != nil {
 		return err
 	}

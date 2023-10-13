@@ -1,6 +1,7 @@
 package client
 
 import (
+	"io/fs"
 	"path/filepath"
 )
 
@@ -9,15 +10,15 @@ const FixtureFileFeedReader = `feed_readers.yml`
 
 func init() {
 	RegClientParser(ParserNameFeedReader,
-		func(dir string) ClientParser {
-			return NewFeedReader(filepath.Join(dir, FixtureFileFeedReader))
+		func(fsys fs.FS, dir string) ClientParser {
+			return NewFeedReader(fsys, filepath.Join(dir, FixtureFileFeedReader))
 		})
 }
 
-func NewFeedReader(fileName string) *FeedReader {
+func NewFeedReader(fsys fs.FS, fileName string) *FeedReader {
 	c := &FeedReader{}
 	c.ParserName = ParserNameFeedReader
-	if err := c.Load(fileName); err != nil {
+	if err := c.Load(fsys, fileName); err != nil {
 		return nil
 	}
 	return c

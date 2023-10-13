@@ -1,6 +1,7 @@
 package client
 
 import (
+	"io/fs"
 	"sort"
 	"strings"
 
@@ -35,9 +36,9 @@ type ClientParserAbstract struct {
 	overAllMatch Regular
 }
 
-func (c *ClientParserAbstract) Load(file string) error {
+func (c *ClientParserAbstract) Load(fsys fs.FS, file string) error {
 	var v []*ClientReg
-	err := ReadYamlFile(file, &v)
+	err := ReadYamlFile(fsys, file, &v)
 	if err != nil {
 		return err
 	}

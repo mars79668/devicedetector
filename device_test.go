@@ -1,6 +1,7 @@
 package devicedetector
 
 import (
+	"io/fs"
 	"strconv"
 	"sync"
 	"testing"
@@ -69,8 +70,13 @@ func TestBot(t *testing.T) {
 		Ua  string         `yaml:"user_agent"`
 		Bot BotMatchResult `yaml:"bot"`
 	}
+	fsys, err := fs.Sub(regexesFiles, "regexes")
+	if err != nil {
+		t.Error(err)
+	}
+
 	var listBotTest []BotTest
-	err := ReadYamlFile(`fixtures/bots.yml`, &listBotTest)
+	err = ReadYamlFile(fsys, `fixtures/bots.yml`, &listBotTest)
 	if err != nil {
 		t.Error(err)
 	}
@@ -173,6 +179,12 @@ type SmartFixture struct {
 
 func TestRegThread(t *testing.T) {
 	// read file
+
+	fsys, err := fs.Sub(regexesFiles, "regexes")
+	if err != nil {
+		t.Error(err)
+	}
+
 	var lists [][]*SmartFixture
 	for i := 0; i <= 12; i++ {
 		var list []*SmartFixture
@@ -182,7 +194,7 @@ func TestRegThread(t *testing.T) {
 		} else {
 			name = `smartphone-` + strconv.Itoa(i) + `.yml`
 		}
-		err := ReadYamlFile(`fixtures/`+name, &list)
+		err := ReadYamlFile(fsys, `fixtures/`+name, &list)
 		if err == nil {
 			lists = append(lists, list)
 		}

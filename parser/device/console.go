@@ -1,6 +1,7 @@
 package device
 
 import (
+	"io/fs"
 	"path/filepath"
 )
 
@@ -9,14 +10,14 @@ const FixtureFileConsole = `consoles.yml`
 
 func init() {
 	RegDeviceParser(ParserNameConsole,
-		func(dir string) DeviceParser {
-			return NewConsole(filepath.Join(dir, FixtureFileConsole))
+		func(fsys fs.FS, dir string) DeviceParser {
+			return NewConsole(fsys, filepath.Join(dir, FixtureFileConsole))
 		})
 }
 
-func NewConsole(fileName string) *Console {
+func NewConsole(fsys fs.FS, fileName string) *Console {
 	c := &Console{}
-	if err := c.Load(fileName); err != nil {
+	if err := c.Load(fsys, fileName); err != nil {
 		return nil
 	}
 	return c

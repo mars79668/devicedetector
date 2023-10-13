@@ -1,6 +1,7 @@
 package client
 
 import (
+	"io/fs"
 	"path/filepath"
 )
 
@@ -9,15 +10,15 @@ const FixtureFileMobileApp = `mobile_apps.yml`
 
 func init() {
 	RegClientParser(ParserNameMobileApp,
-		func(dir string) ClientParser {
-			return NewMobileApp(filepath.Join(dir, FixtureFileMobileApp))
+		func(fsys fs.FS, dir string) ClientParser {
+			return NewMobileApp(fsys, filepath.Join(dir, FixtureFileMobileApp))
 		})
 }
 
-func NewMobileApp(fileName string) *MobileApp {
+func NewMobileApp(fsys fs.FS, fileName string) *MobileApp {
 	c := &MobileApp{}
 	c.ParserName = ParserNameMobileApp
-	if err := c.Load(fileName); err != nil {
+	if err := c.Load(fsys, fileName); err != nil {
 		return nil
 	}
 	return c
