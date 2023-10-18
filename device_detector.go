@@ -172,6 +172,7 @@ func (d *DeviceDetector) parseInfo(info *DeviceInfo) {
 		info.Type = r.Type
 		info.Model = r.Model
 		info.Brand = r.Brand
+		info.Manufacturer = r.Manufacturer
 	}
 	// If no brand has been assigned try to match by known vendor fragments
 	if info.Brand == "" && d.vendorParser != nil {

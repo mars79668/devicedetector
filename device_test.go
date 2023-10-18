@@ -17,7 +17,7 @@ import (
 var dd, _ = NewDeviceDetector("regexes")
 
 func TestParseInvalidUA(t *testing.T) {
-	info := dd.Parse(`12345`)
+	info := dd.Parse(`Mozilla/5.0 (Linux; Android 10; TNY-AL00 Build/HUAWEITNY-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/83.0.4103.106 Mobile Safari/537.36`)
 	if info != nil {
 		t.Fatal("testParseInvalidUA fail")
 	}
