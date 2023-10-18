@@ -11,9 +11,10 @@ import (
 const UnknownBrand = "Unknown"
 
 type DeviceMatchResult struct {
-	Type  string `yaml:"type"`
-	Model string `yaml:"model"`
-	Brand string `yaml:"brand"`
+	Manufacturer string
+	Type         string `yaml:"type"`
+	Model        string `yaml:"model"`
+	Brand        string `yaml:"brand"`
 }
 
 type DeviceParser interface {
@@ -29,10 +30,11 @@ type Model struct {
 }
 
 type DeviceReg struct {
-	Regular `yaml:",inline" json:",inline"`
-	Model   string   `yaml:"model" json:"model"`
-	Device  string   `yaml:"device" json:"device"`
-	Models  []*Model `yaml:"models" json:"models"`
+	Regular      `yaml:",inline" json:",inline"`
+	Model        string `yaml:"model" json:"model"`
+	Device       string `yaml:"device" json:"device"`
+	Manufacturer string
+	Models       []*Model `yaml:"models" json:"models"`
 }
 
 type DeviceParserAbstract struct {
@@ -46,7 +48,8 @@ func (d *DeviceParserAbstract) Load(fsys fs.FS, file string) error {
 	if err != nil {
 		return err
 	}
-	for _, item := range v {
+	for mk, item := range v {
+		item.Manufacturer = mk
 		item.Compile()
 		for _, m := range item.Models {
 			m.Compile()
@@ -96,7 +99,8 @@ func (d *DeviceParserAbstract) Parse(ua string) *DeviceMatchResult {
 	}
 
 	r := &DeviceMatchResult{
-		Type: regex.Device,
+		Type:         regex.Device,
+		Manufacturer: regex.Manufacturer,
 	}
 	if brand != UnknownBrand {
 		brandId := FindBrand(brand)
