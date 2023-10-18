@@ -2,7 +2,6 @@ package devicedetector
 
 import (
 	"embed"
-	"io/fs"
 	"path/filepath"
 	"strings"
 
@@ -55,10 +54,12 @@ type DeviceDetector struct {
 var regexesFiles embed.FS
 
 func NewDeviceDetector(dir string) (*DeviceDetector, error) {
-	fsys, err := fs.Sub(regexesFiles, dir)
-	if err != nil {
-		return nil, err
-	}
+	// fsys, err := fs.Sub(regexesFiles, dir)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	fsys := regexesFiles
 	vp, err := NewVendor(fsys, filepath.Join(dir, FixtureFileVendor))
 	if err != nil {
 		return nil, err
